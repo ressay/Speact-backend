@@ -1,0 +1,245 @@
+@prefix : <http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7> .
+
+<http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#a_acted
+:a_acted rdf:type owl:ObjectProperty ;
+         rdfs:domain :Agent ;
+         rdfs:range :Agent_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#change_dir_to
+:change_dir_to rdf:type owl:ObjectProperty ;
+               rdfs:domain :Change_directory ;
+               rdfs:range :Directory .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#confirm
+:confirm rdf:type owl:ObjectProperty ;
+         rdfs:domain :User ;
+         rdfs:range :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#contains_act
+:contains_act rdf:type owl:ObjectProperty ;
+              rdfs:domain :Dialogue ;
+              rdfs:range :Dialogue_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#contains_file
+:contains_file rdf:type owl:ObjectProperty ;
+               rdfs:domain :Directory ;
+               rdfs:range :File .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#deny
+:deny rdf:type owl:ObjectProperty ;
+      rdfs:domain :User ;
+      rdfs:range :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#has_desire
+:has_desire rdf:type owl:ObjectProperty ;
+            rdfs:domain :User ;
+            rdfs:range :Desire .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#has_parameter
+:has_parameter rdf:type owl:ObjectProperty ;
+               rdfs:domain :Dialogue_act ;
+               rdfs:range :Act_parameter .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#next_act
+:next_act rdf:type owl:ObjectProperty ;
+          rdfs:domain :Dialogue_act ;
+          rdfs:range :Dialogue_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#u_acted
+:u_acted rdf:type owl:ObjectProperty ;
+         rdfs:domain :User ;
+         rdfs:range :User_act .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#has_extension
+:has_extension rdf:type owl:DatatypeProperty ;
+               rdfs:domain :RegFile ;
+               rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#has_name
+:has_name rdf:type owl:DatatypeProperty ;
+          rdfs:domain :File ;
+          rdfs:range rdfs:Literal .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#A_ask
+:A_ask rdf:type owl:Class ;
+       rdfs:subClassOf :Agent_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#A_inform
+:A_inform rdf:type owl:Class ;
+          rdfs:subClassOf :Agent_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#A_request
+:A_request rdf:type owl:Class ;
+           rdfs:subClassOf :Agent_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Act_parameter
+:Act_parameter rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Agent
+:Agent rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Agent_act
+:Agent_act rdf:type owl:Class ;
+           rdfs:subClassOf :Dialogue_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Agent_action
+:Agent_action rdf:type owl:Class ;
+              rdfs:subClassOf :Act_parameter ,
+                              :Agent_act ,
+                              :Desire .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Change_directory
+:Change_directory rdf:type owl:Class ;
+                  rdfs:subClassOf :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Copy_file
+:Copy_file rdf:type owl:Class ;
+           rdfs:subClassOf :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Create_file
+:Create_file rdf:type owl:Class ;
+             rdfs:subClassOf :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Delete_file
+:Delete_file rdf:type owl:Class ;
+             rdfs:subClassOf :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Desire
+:Desire rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Dialogue
+:Dialogue rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Dialogue_act
+:Dialogue_act rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Directory
+:Directory rdf:type owl:Class ;
+           rdfs:subClassOf :File .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#File
+:File rdf:type owl:Class ;
+      rdfs:subClassOf :Act_parameter .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#File_name
+:File_name rdf:type owl:Class ;
+           rdfs:subClassOf :Slot .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Move_file
+:Move_file rdf:type owl:Class ;
+           rdfs:subClassOf :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#New_name
+:New_name rdf:type owl:Class ;
+          rdfs:subClassOf :Slot .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Old_name
+:Old_name rdf:type owl:Class ;
+          rdfs:subClassOf :Slot .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Open_file
+:Open_file rdf:type owl:Class ;
+           rdfs:subClassOf :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Parent_directory
+:Parent_directory rdf:type owl:Class ;
+                  rdfs:subClassOf :Slot .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#RegFile
+:RegFile rdf:type owl:Class ;
+         rdfs:subClassOf :File .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Rename_file
+:Rename_file rdf:type owl:Class ;
+             rdfs:subClassOf :Agent_action .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#Slot
+:Slot rdf:type owl:Class ;
+      rdfs:subClassOf :Act_parameter .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#U_act_desire
+:U_act_desire rdf:type owl:Class ;
+              owl:equivalentClass [ rdf:type owl:Restriction ;
+                                    owl:onProperty :has_desire ;
+                                    owl:someValuesFrom :Desire
+                                  ] ;
+              rdfs:subClassOf :User_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#U_inform
+:U_inform rdf:type owl:Class ;
+          rdfs:subClassOf :User_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#U_request
+:U_request rdf:type owl:Class ;
+           rdfs:subClassOf :User_act .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#User
+:User rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/ressay/ontologies/2019/2/untitled-ontology-7#User_act
+:User_act rdf:type owl:Class ;
+          rdfs:subClassOf :Dialogue_act .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
