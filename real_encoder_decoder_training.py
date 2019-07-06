@@ -514,6 +514,7 @@ POSTAG_SET = {
     ")": 'Unknown',
     ":": 'Unknown',
     'PAD': 'padding tag for training in many batches',
+    "#" : 'Number',
     '.': 'Punctuation',
     'CC': 'coordinating conjunction',
     'CD': 'cardinal digit',
@@ -582,7 +583,7 @@ conf_obj = {
         'decoder_output_dim': n_tags,
 }
 
-w2v_model = gensim.models.KeyedVectors.load_word2vec_format('models/GoogleNews-vectors-negative300.bin',
+w2v_model = gensim.models.KeyedVectors.load_word2vec_format('models/GoogleNews-vectors-negative300.bin.gz',
                                                             binary=True, limit=1000000)
 print('done with all the loadings')
 
