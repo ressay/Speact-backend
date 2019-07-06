@@ -130,8 +130,8 @@ class Nlg_system(object):
                 }
             },
             'Open_file': [
-                '<file_type> <file_name> has been opened!',
-                'I opened <file_type> <file_name>',
+                '<file_name> has been opened!',
+                'I opened <file_name>',
                 'I opened <file_name>',
                 'Here is <file_name>!'
             ],
@@ -162,9 +162,6 @@ class Nlg_system(object):
             'new_name': [self.value_replacer],
         }
         self.actions = {
-            'request': [
-                'request something'
-            ],
             'Create_file': [
                 'create <file_type> <file_name> under <path>'
             ],
@@ -180,9 +177,6 @@ class Nlg_system(object):
             ],
             'Change_directory': [
                 'change directory to <new_directory>'
-            ],
-            'inform': [
-                "inform you"
             ]
         }
 
@@ -241,6 +235,8 @@ class Nlg_system(object):
         if agent_action['intent'] == 'inform' and 'error' in agent_action:
             err = agent_action['error']
             return err.turn_to_text()
+        if agent_action['intent'] == 'ask' and agent_action['action']['intent'] in ('inform', 'request','default'):
+            agent_action['intent'] = 'default'
         self.fix_slots(agent_action)
         models = self.get_models(agent_action)
         # print(models)
