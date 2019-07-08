@@ -22,6 +22,8 @@ class StateTrackerFB(StateTracker):
         :param (rdflib.Graph) ontology:
         """
         super().__init__(size, ontology, one_hot, lazy_encoding, data)
+
+        self.bricolage = Bricolage()
         # self.focused_file = None
         self.user_actions_map = {
             usim.Create_file_desire: self.agent_actions_desire_triplets_u,
@@ -169,6 +171,9 @@ class StateTrackerFB(StateTracker):
         :return (list): list of triplets from user's action
         """
         self.last_user_action = user_action
+        if 'dest' in user_action:
+            self.bricolage.set_referenced_directory(user_action['dest'])
+        user_action = self.bricolage.fix_references(user_action)
         return self.user_actions_map[user_action['intent']](user_action)
 
     def default_u(self, user_action):
@@ -356,6 +361,13 @@ class StateTrackerFB(StateTracker):
         :return (list): list of triplets from user's action
         """
         triplets = self.agent_actions_map[agent_action['intent']](agent_action)
+        if 'file_node' in agent_action:
+            node = agent_action['file_node']
+            if node in self.file_type:
+                if self.file_type[node] == fbrowser.Directory:
+                    self.bricolage.set_referenced_directory(self.name_by_node[node])
+                else:
+                    self.bricolage.set_referenced_file(self.name_by_node[node])
         return triplets
 
     def ask_triplets_a(self, agent_action):
@@ -488,6 +500,8 @@ class StateTrackerFB(StateTracker):
 
         # update inner state
         self.change_directory_node(agent_action['file_node'])
+        self.bricolage.set_parent_directory(None if agent_action['file_node'] not in self.parent
+                                            else self.parent[agent_action['file_node']])
         return triplets
 
     ############### FILE RELATED METHODS
@@ -827,6 +841,47 @@ class StateTrackerFB(StateTracker):
         for n in self.children[root]:
             self.print_tree(n, pref + '--')
 
+
+class Bricolage(object):
+    def __init__(self) -> None:
+        super().__init__()
+        self.last_file_refs = ['it', 'that', 'the file', 'that file']
+        self.file_slots = ['file_name', 'old_name']
+        self.last_directory_refs = ['there', 'it', 'that', 'that directory', 'the directory',
+                                    'that folder', 'the folder']
+        self.dir_slots = ['directory', 'dest', 'parent_directory', 'origin']
+        self.prev_directory_refs = ['back', 'previous folder', 'previous directory',
+                                    'the parent folder', 'parent folder', 'parent',
+                                    'the parent directory', 'parent directory'
+                                    ]
+        self.prev_slots = ['directory', 'dest', 'parent_directory', 'origin']
+        self.last_file = None
+        self.last_directory = None
+        self.parent_directory = None
+        
+
+    def fix_references(self, user_action):
+        for slot in self.file_slots:
+            if slot in user_action and user_action[slot] in self.last_file_refs:
+                user_action[slot] = self.last_file
+
+        for slot in self.dir_slots:
+            if slot in user_action and user_action[slot] in self.last_directory_refs:
+                user_action[slot] = self.last_directory
+
+        for slot in self.prev_slots:
+            if slot in user_action and user_action[slot] in self.prev_directory_refs:
+                user_action[slot] = self.parent_directory
+        return user_action
+
+    def set_parent_directory(self, parent_directory):
+        self.parent_directory = parent_directory
+
+    def set_referenced_file(self, referenced_file):
+        self.last_file = referenced_file
+
+    def set_referenced_directory(self, referenced_directory):
+        self.last_directory = referenced_directory
 
 if __name__ == '__main__':
     state_tracker = StateTrackerFB(1, fbrowser.graph)

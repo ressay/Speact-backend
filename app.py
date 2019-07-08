@@ -36,6 +36,8 @@ def get_bot_response():
     nlg_sys = Nlg_system()
     output_text = 'well, nlg error'
     apply_action(action)
+    if user_action['intent'] == 'inform':
+        action['updated'] = True
     # try:
     output_text = nlg_sys.get_sentence(action)
     # except Exception as e:
@@ -50,7 +52,7 @@ def get_bot_response():
     dqn_agent.state_tracker.print_tree()
     return jsonify(
         text=output_text,
-        files=reg_files+dirs,
+        files={"files": reg_files, "dirs": dirs},
         parsed={
             'intent': intent,
             'slots': tags,

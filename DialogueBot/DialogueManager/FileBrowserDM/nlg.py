@@ -4,6 +4,17 @@ import re
 class Nlg_system(object):
     def __init__(self) -> None:
         super().__init__()
+        self.others = ['Create_file',
+            'Delete_file',
+            'Move_file',
+            'Copy_file',
+            'Change_directory',
+                       'Rename_file',
+                       'Open_file']
+        self.prefixes = {
+            'request': ['','','ok, ', 'alright, ','I see, ','', ''],
+            'other': ['','','ok, ', 'alright, ','done, ',]
+        }
         self.models = {
             'ask': [
                 "Should I <action>?",
@@ -137,10 +148,10 @@ class Nlg_system(object):
             ],
             'Rename_file': [
                 "<old_name> has been changed to <new_name>!",
-                "I changed <old_name> to <new_name>",
+                "ok, I changed <old_name> to <new_name>",
                 "<old_name> is now <new_name>!",
                 "the file's name has been changed to <new_name>",
-                "I changed it to <new_name>"
+                "alright, I changed it to <new_name>"
             ],
             'default': [
                 "Sorry, can you repeat, I did not understand",
@@ -237,6 +248,40 @@ class Nlg_system(object):
             return err.turn_to_text()
         if agent_action['intent'] == 'ask' and agent_action['action']['intent'] in ('inform', 'request','default'):
             agent_action['intent'] = 'default'
+        prefix = ''
+        if 'updated' in agent_action and agent_action['intent'] in self.others:
+            prefix = random.choice(self.prefixes['other'])
+        elif 'updated' in agent_action and agent_action['intent'] in self.prefixes:
+            prefix = random.choice(self.prefixes[agent_action['intent']])
+        if 'nlg' in agent_action:
+            prefix = ""
+            file_name = agent_action['fname']
+            if 'no_file_found' in agent_action['nlg']:
+                parent = agent_action['nlg']['no_file_found']
+                if parent is None:
+                    return random.choice([
+                            "I'm sorry, I couldn't find "+file_name+", maybe you meant something else?",
+                            "Sorry, Could you please repeat? I could not find "+file_name,
+                            "I couldn't find "+file_name+", did you mean something else? sorry for the inconvenience"
+                            ])
+                else:
+                    return random.choice([
+                        "I'm sorry, I couldn't find "+file_name+" under"+parent+", maybe you meant something else?",
+                        "Sorry, Could you please repeat? I could not find "+file_name+" under"+parent,
+                        "I couldn't find "+file_name+" under"+parent+
+                        ", did you mean something else? sorry for the inconvenience"
+                    ])
+            # elif 'multiple_files_found' in agent_action['nlg']:
+            #     paths = agent_action['nlg']['multiple_files_found']
+            #     paths = "; ".join(paths)
+
+
+
+        # 'multiple_file_found': [
+        #     "I found many files named <file_name>, could you please tell me what's its parent directory?",
+        #     "I found many files '<file_name>', Please give me its parent directory?",
+        #     "Sorry I can't tell which '<file_name>' you meant, could you tell me where is it located?"
+        # ],
         self.fix_slots(agent_action)
         models = self.get_models(agent_action)
         # print(models)
@@ -245,7 +290,7 @@ class Nlg_system(object):
             expressions = self.get_expressions(param,agent_action[param])
             e = self.choose_random(expressions)
             model = model.replace('<'+param+'>', e)
-        return model
+        return prefix+model
 
 
 if __name__ == '__main__':

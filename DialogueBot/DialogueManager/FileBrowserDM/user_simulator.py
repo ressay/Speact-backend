@@ -196,7 +196,7 @@ class UserSimulatorFB(UserSimulator):
             if f < pf:
                 if 'nimprovedf' in self.rewards:
                     return self.rewards['nimprovedf']
-                return -3
+                return -6
             if 'nimproved' in self.rewards:
                 return self.rewards['nimproved']
             return -3
@@ -204,11 +204,11 @@ class UserSimulatorFB(UserSimulator):
         if self.state['current_uAction']['intent'] == self.confirm:
             if 'confirm' in self.rewards:
                 return self.rewards['confirm']
-            return 0.25
+            return 0.5
         if self.state['current_uAction']['intent'] == self.deny:
             if 'deny' in self.rewards:
                 return self.rewards['deny']
-            return -0.25
+            return -0.5
 
         if 'other' in self.rewards:
             return self.rewards['other']
