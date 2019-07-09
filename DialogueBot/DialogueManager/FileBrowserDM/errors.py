@@ -75,7 +75,7 @@ class RemoveCurrentDirError(DialogueError):
         possible_outputs = [
             'could not perform the action because it would remove the current directory',
             'sorry but removing <name> would remove the current path',
-            'I can nor remove <name> because it would remove <path>'
+            'I can not remove <name> because it would remove <path>, which is the current path'
         ]
         return possible_outputs
 

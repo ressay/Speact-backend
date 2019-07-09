@@ -221,7 +221,21 @@ class ActionTracker(object):
             if needs is None:
                 # print('needs is None')
                 continue
-            if key in self.file_node_slot_filler:
+            if key in self.file_node_slot_filler: # if it's file_name, old_name, directory
+                if key in self.intent_tracker.current_intent_info:
+                    candidate_nodes = self.current_action_info['nodes_info']['candidate_nodes']
+                    intent_info = self.intent_tracker.current_intent_info
+                    needs['fname'] = intent_info[key]
+                    if len(candidate_nodes) > 1:
+                        paths = [self.state_tracker.get_path_with_real_root(node) for node in candidate_nodes]
+                        needs['nlg'] = {'multiple_files_found': paths}
+                    elif len(candidate_nodes) == 0:
+                        value = None
+                        if 'parent_directory' in intent_info:
+                            value = intent_info['parent_directory']
+                        if 'origin' in intent_info:
+                            value = intent_info['origin']
+                        needs['nlg'] = {'no_file_found': value}
                 needs['file_node'] = self.current_action_info[self.file_node_slot_filler[key]]
                 actions.append(self.create_request_action(key, needs))
             else:
@@ -445,3 +459,5 @@ class ActionTracker(object):
         for slot in needed:
             action[slot] = needed[slot]
         return action
+
+

@@ -587,12 +587,28 @@ w2v_model = gensim.models.KeyedVectors.load_word2vec_format('models/GoogleNews-v
                                                             binary=True, limit=1000000)
 print('done with all the loadings')
 
+frequent_mistakes = {
+            'fi': 'file'
+        }
+
+def fix_common_mistakes(tokens):
+    """
+
+    :param (str) sentence:
+    :return:
+    """
+    for i,token in enumerate(tokens):
+        if token in frequent_mistakes:
+            tokens[i] = frequent_mistakes[token]
+    return tokens
+
 
 def intent_tags_predict(text):
     model = EncoderDecoderCpuBiLSTM(conf_obj)
     model.load_models_weights('models/nlu_models/base_24/', 'base_24')
     # model.make_predict_functions()
     text = text.lower().split()
+    text = fix_common_mistakes(text)
     word_vectors = [w2v(word, w2v_model) for word in text]
     postags = nltk.pos_tag(text)
     postags = [t for (w, t) in postags]
