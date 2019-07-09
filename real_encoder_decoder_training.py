@@ -590,7 +590,7 @@ print('done with all the loadings')
 
 def intent_tags_predict(text):
     model = EncoderDecoderCpuBiLSTM(conf_obj)
-    model.load_models_weights('models/nlu_models/', 'base_20')
+    model.load_models_weights('models/nlu_models/base_24/', 'base_24')
     # model.make_predict_functions()
     text = text.lower().split()
     word_vectors = [w2v(word, w2v_model) for word in text]
