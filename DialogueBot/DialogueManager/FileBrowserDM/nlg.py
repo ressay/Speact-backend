@@ -266,9 +266,9 @@ class Nlg_system(object):
                             ])
                 else:
                     return random.choice([
-                        "I'm sorry, I couldn't find "+file_name+" under"+parent+", maybe you meant something else?",
-                        "Sorry, Could you please repeat? I could not find "+file_name+" under"+parent,
-                        "I couldn't find "+file_name+" under"+parent+
+                        "I'm sorry, I couldn't find "+file_name+" under "+parent+", maybe you meant something else?",
+                        "Sorry, Could you please repeat? I could not find "+file_name+" under "+parent,
+                        "I couldn't find "+file_name+" under "+parent+
                         ", did you mean something else? sorry for the inconvenience"
                     ])
             # elif 'multiple_files_found' in agent_action['nlg']:
