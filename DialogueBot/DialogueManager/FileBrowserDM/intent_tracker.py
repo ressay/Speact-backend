@@ -72,6 +72,8 @@ class IntentTracker(object):
         self.current_intent_info = {
             'name': user_action['intent']
         }
+        if user_action['intent'] == UserSimulatorFB.Change_directory_desire and 'file_name' in user_action:
+            user_action['directory'] = user_action['file_name']
         for key in self.current_intent_requirements:
             if key in user_action:
                 self.current_intent_info[key] = user_action[key]
@@ -296,7 +298,7 @@ class ActionTracker(object):
                 }]
         actions = [{'intent': 'inform', 'file_name': self.intent_tracker.current_intent_info['file_name'],
                     'paths': [self.state_tracker.get_path_with_real_root(node, False) for node in candidates],
-                    'action_node': fbrowser.U_inform, 'file_node': fbrowser.U_inform}]
+                    'action_node': fbrowser.U_inform, 'file_node': list(candidates)[0]}]
         return actions
 
     def possible_actions_create(self):

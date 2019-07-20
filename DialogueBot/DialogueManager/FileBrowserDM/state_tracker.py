@@ -364,10 +364,13 @@ class StateTrackerFB(StateTracker):
         if 'file_node' in agent_action:
             node = agent_action['file_node']
             if node in self.file_type:
+                file_name = self.name_by_node[node]
+                if agent_action['intent'] == 'Rename_file':
+                    file_name = agent_action['new_name']
                 if self.file_type[node] == fbrowser.Directory:
-                    self.bricolage.set_referenced_directory(self.name_by_node[node])
+                    self.bricolage.set_referenced_directory(file_name)
                 else:
-                    self.bricolage.set_referenced_file(self.name_by_node[node])
+                    self.bricolage.set_referenced_file(file_name)
         return triplets
 
     def ask_triplets_a(self, agent_action):
@@ -500,8 +503,8 @@ class StateTrackerFB(StateTracker):
 
         # update inner state
         self.change_directory_node(agent_action['file_node'])
-        self.bricolage.set_parent_directory(None if agent_action['file_node'] not in self.parent
-                                            else self.parent[agent_action['file_node']])
+        self.bricolage.set_parent_directory("" if agent_action['file_node'] not in self.parent
+                                            else self.name_by_node[self.parent[agent_action['file_node']]])
         return triplets
 
     ############### FILE RELATED METHODS
@@ -849,28 +852,33 @@ class Bricolage(object):
         self.file_slots = ['file_name', 'old_name']
         self.last_directory_refs = ['there', 'it', 'that', 'that directory', 'the directory',
                                     'that folder', 'the folder']
-        self.dir_slots = ['directory', 'dest', 'parent_directory', 'origin']
-        self.prev_directory_refs = ['back', 'previous folder', 'previous directory',
+        self.dir_slots = ['directory', 'dest', 'parent_directory', 'origin', 'file_name']
+        self.prev_directory_refs = ['back', 'previous folder', 'previous directory', 'previous',
                                     'the parent folder', 'parent folder', 'parent',
                                     'the parent directory', 'parent directory'
                                     ]
-        self.prev_slots = ['directory', 'dest', 'parent_directory', 'origin']
-        self.last_file = None
-        self.last_directory = None
-        self.parent_directory = None
+        self.prev_slots = ['directory', 'dest', 'parent_directory', 'origin', 'file_name']
+        self.last_file = ""
+        self.last_directory = ''
+        self.parent_directory = ""
         
 
     def fix_references(self, user_action):
+        done = {}
         for slot in self.file_slots:
-            if slot in user_action and user_action[slot] in self.last_file_refs:
+            if slot in user_action and user_action[slot] in self.last_file_refs and len(self.last_file):
                 user_action[slot] = self.last_file
+                done[slot] = True
 
         for slot in self.dir_slots:
-            if slot in user_action and user_action[slot] in self.last_directory_refs:
+            if slot in user_action and user_action[slot] in self.last_directory_refs and slot not in done\
+                    and len(self.last_directory):
                 user_action[slot] = self.last_directory
+                done[slot] = True
 
         for slot in self.prev_slots:
-            if slot in user_action and user_action[slot] in self.prev_directory_refs:
+            if slot in user_action and user_action[slot] in self.prev_directory_refs and slot not in done\
+                    and len(self.parent_directory):
                 user_action[slot] = self.parent_directory
         return user_action
 

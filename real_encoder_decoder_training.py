@@ -70,12 +70,14 @@ class EncoderDecoder(metaclass=ABCMeta):
     def _build_model(self):
         pass
 
-    def predict_sequence(self, source, n_steps):
+    def predict_sequence(self, source, n_steps, overinf=True):
         # encode
         state = self.inf_encoder_model.predict(source)
         intent_output = self.inf_intent_classifier.predict(source)
         # start of sequence input
         target_seq = np.zeros(shape=(1, 1, self.decoder_input_dim))
+        if overinf:
+            target_seq[0, 0, :] = np.concatenate((np.zeros(shape=self.decoder_output_dim), source[0, 0, :]), axis=0)
         # collect predictions
         output = list()
         for t in range(n_steps):
@@ -86,7 +88,10 @@ class EncoderDecoder(metaclass=ABCMeta):
             # update state
             state = [h, c]
             # update target sequence
-            target_seq = yhat
+            if overinf and t + 1 < n_steps:
+                target_seq = np.concatenate((yhat, source[:1, t + 1:t + 2, :]), axis=2)
+            else:
+                target_seq = yhat
         return np.array(output), np.array(intent_output)
 
     @staticmethod
@@ -145,7 +150,7 @@ class EncoderDecoder(metaclass=ABCMeta):
             root + '{}_inf_decoder.h5'.format(top_model.model_name))
 
     def load_models_from_disk(self, root, new_name):
-        self.model = lm(root + '{}.h5'.format(new_name))
+        # self.model = lm(root + '{}.h5'.format(new_name))
         self.inf_encoder_model = lm(
             root + '{}_inf_encoder.h5'.format(new_name))
         self.inf_intent_classifier = lm(
@@ -160,7 +165,7 @@ class EncoderDecoder(metaclass=ABCMeta):
         self.inf_intent_classifier._make_predict_function()
 
     def load_models_weights(self, root, new_name):
-        self.model.load_weights(root + '{}.h5'.format(new_name))
+        # self.model.load_weights(root + '{}.h5'.format(new_name))
         self.inf_encoder_model.load_weights(
             root + '{}_inf_encoder.h5'.format(new_name))
         self.inf_intent_classifier.load_weights(
@@ -514,7 +519,7 @@ POSTAG_SET = {
     ")": 'Unknown',
     ":": 'Unknown',
     'PAD': 'padding tag for training in many batches',
-    "#" : 'Number',
+    "#": 'Number',
     '.': 'Punctuation',
     'CC': 'coordinating conjunction',
     'CD': 'cardinal digit',
@@ -573,23 +578,25 @@ vector_size = 300  # w2v_model.vector_size
 postag_vec_size = len(POSTAG_SET)
 
 conf_obj = {
-        'activation': 'relu',
-        'model_name': 'EncoderDecoder_BiLSTM_CPU_POSTAGS_PER_INTENT_',
-        'encoder_input_dim': vector_size + postag_vec_size,
-        'encoder_output_dim': 256,
-        'encoder_dense_units': 512,
-        'encoder_dense_output_dim': n_intents,
-        'decoder_input_dim': n_tags,
-        'decoder_output_dim': n_tags,
+    'activation': 'relu',
+    'model_name': 'EncoderDecoder_BiLSTM_CPU_POSTAGS_PER_INTENT_',
+    'encoder_input_dim': vector_size + postag_vec_size,
+    'encoder_output_dim': 256,
+    'encoder_dense_units': 512,
+    'encoder_dense_output_dim': n_intents,
+    'decoder_input_dim': n_tags + vector_size + postag_vec_size,
+    'decoder_output_dim': n_tags,
 }
 
 w2v_model = gensim.models.KeyedVectors.load_word2vec_format('models/GoogleNews-vectors-negative300.bin.gz',
                                                             binary=True, limit=1000000)
 print('done with all the loadings')
-
 frequent_mistakes = {
-            'fi': 'file'
-        }
+    'fi': 'file',
+    'fire': 'file',
+    'five': 'file'
+}
+
 
 def fix_common_mistakes(tokens):
     """
@@ -597,7 +604,7 @@ def fix_common_mistakes(tokens):
     :param (str) sentence:
     :return:
     """
-    for i,token in enumerate(tokens):
+    for i, token in enumerate(tokens):
         if token in frequent_mistakes:
             tokens[i] = frequent_mistakes[token]
     return tokens
@@ -605,7 +612,7 @@ def fix_common_mistakes(tokens):
 
 def intent_tags_predict(text):
     model = EncoderDecoderCpuBiLSTM(conf_obj)
-    model.load_models_weights('models/nlu_models/', 'base_24')
+    model.load_models_weights('models/nlu_models/', 'base_y')
     # model.make_predict_functions()
     text = text.lower().split()
     text = fix_common_mistakes(text)
