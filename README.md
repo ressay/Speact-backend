@@ -15,7 +15,7 @@ pip3 install -r requirements.txt
 To launch the server, activate your virtual environement if you have one, make sure all the deps are installed, then do : </br>
 
 ```bash
-export FLASK_APP=app.py </br>
+export FLASK_APP=app.py
 flask run
 ```
 
