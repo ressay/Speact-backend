@@ -1,8 +1,8 @@
 # Installation
 
 First, you will need to install : </br>
-	-python3.7
-	-pip
+* python3.7
+* pip
 
 Then, you need to install the deps, this is done by executing the command : </br>
 
