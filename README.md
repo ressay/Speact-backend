@@ -19,4 +19,4 @@ export FLASK_APP=app.py
 flask run
 ```
 
-You should now have the server running on `localhost:5000'
+You should now have the server running on `localhost:5000`
