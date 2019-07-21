@@ -1,8 +1,8 @@
-#Installation
+# Installation
 
 First, you will need to install : </br>
-	- python3.7
-	- pip
+	-python3.7
+	-pip
 
 Then, you need to install the deps, this is done by executing the command : </br>
 
@@ -10,7 +10,7 @@ Then, you need to install the deps, this is done by executing the command : </br
 pip3 install -r requirements.txt
 ```
 
-#Usage
+# Usage
 
 To launch the server, activate your virtual environement if you have one, make sure all the deps are installed, then do : </br>
 
