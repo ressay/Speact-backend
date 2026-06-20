@@ -1,0 +1,14 @@
+[project]
+name = "speact-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.7.9"
+dependencies = [
+    "flask",
+    "flask-cors",
+    "keras==2.2.5",
+    "numpy",
+    "rdflib==4.2.2",
+    "tensorflow==1.13.2",
+]
